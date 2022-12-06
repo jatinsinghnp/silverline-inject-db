@@ -2,10 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
 import json
-from datetime import datetime
 import psycopg2
-from dateutil import parser
-
 
 print("connected ...")
 
@@ -15,40 +12,37 @@ def firsttable():
         f"host='localhost' dbname='silverline' user='postgres' password='root' port='5432' "
     )
     cur = conn.cursor()
-    sql = """
-    
-    SELECT array_to_json(array_agg(row_to_json(r))) FROM public.intbl_purchaserequisition r;
-
-
+    sql = """  
+    select * from intbl_purchaserequisition;
     """
     try:
         cur.execute(sql)
         data = cur.fetchall()
-
     except Exception as e:
         print(e)
     return data
 
 
-def secondtable():
+def secondtable(id):
     conn = psycopg2.connect(
         f"host='localhost' dbname='silverline' user='postgres' password='root' port='5432' "
     )
     cur = conn.cursor()
-    sql2 = """
+    sql2 = f"""
     
-SELECT array_to_json(array_agg(row_to_json(r))) FROM public.intbl_purchaserequisition_contract r;
+         select * from intbl_purchaserequisition_contract where "PurchaseReqID"={id};
+
     """
     try:
         cur.execute(sql2)
         data = cur.fetchall()
-
+        print(json.loads(data))
     except Exception as e:
         print(e)
     return data
 
 
-dataf = [firsttable() + secondtable()]
+# dataf = [firsttable() + secondtable()]
 
 
 # print(secondtable())
@@ -56,8 +50,16 @@ dataf = [firsttable() + secondtable()]
 # Create your views here.
 @api_view(["GET"])
 def Apihome(request):
+    data = firsttable()
 
-    return JsonResponse({"data": dataf})
+    return JsonResponse({"purchaserequisition": data})
+
+
+@api_view(["GET"])
+def Api_details(request, id):
+
+    data = secondtable(id)
+    return JsonResponse({"intbl_purchaserequisition_contract": data})
 
 
 @api_view(["POST"])
@@ -104,25 +106,25 @@ def Apisent(request):
             ),
         )
 
-        cur.execute(
-            sql2,
-            (
-                data["RequisitionDetailsList"][0]["ItemID"],
-                data["RequisitionDetailsList"][0]["UnitsOrdered"],
-                data["RequisitionDetailsList"][0]["PurchaseReqID"],
-                data["RequisitionDetailsList"][0]["Rate"],
-                data["RequisitionDetailsList"][0]["Name"],
-                data["RequisitionDetailsList"][0]["BrandName"],
-                data["RequisitionDetailsList"][0]["Code"],
-                data["RequisitionDetailsList"][0]["UOM"],
-                data["RequisitionDetailsList"][0]["StockType"],
-                data["RequisitionDetailsList"][0]["Department"],
-                data["RequisitionDetailsList"][0]["GroupName"],
-                data["RequisitionDetailsList"][0]["ExpDate"],
-                data["RequisitionDetailsList"][0]["Status"],
-                data["RequisitionDetailsList"][0]["Taxable"],
-            ),
-        )
+        for data in data["RequisitionDetailsList"]:
+
+            listdata = (
+                data["ItemID"],
+                data["UnitsOrdered"],
+                data["PurchaseReqID"],
+                data["Rate"],
+                data["Name"],
+                data["BrandName"],
+                data["Code"],
+                data["UOM"],
+                data["StockType"],
+                data["Department"],
+                data["GroupName"],
+                data["ExpDate"],
+                data["Status"],
+                data["Taxable"],
+            )
+            cur.execute(sql2, listdata)
 
         conn.commit()
 
