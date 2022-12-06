@@ -1,0 +1,16 @@
+{"RequisitionType":"","Date":"2022-12-05T00:00:00","TotalAmount":0.0,"TaxAmount":0.0,"Company_Name":"","State":"","ReceivedDate":"2022-12-05T00:00:00","PurchaseBillNumber":"","DiscountAmount":0.0}
+"RequisitionDetailsList":[{"ItemID":1,"UnitsOrdered":1.0,"PurchaseReqID":"1","Rate":0.0,"Name":"Tuna","BrandName":"","Code":"","UOM":"","StockType":"","Department":"","GroupName":"","ExpDate":"2022-12-05T00:00:00","Status":"","Taxable":""}
+
+
+{
+"RequisitionType":"Purchase",
+"Date":"2022-12-06T09:53:46",
+"TotalAmount":113.0,
+"TaxAmount":13.0,
+"Company_Name":"Avia Traders Pvt. Ltd.",
+"State":"Received",
+"ReceivedDate":"2022-12-06T09:53:46",
+"purchaseBillNumber":111,
+"DiscountAmount":0.0,
+"Outlet_Name":"Culinary Urban Services Pvt. Ltd."
+}
